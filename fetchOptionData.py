@@ -1,19 +1,24 @@
 import robin_stocks.robinhood as r
 from robin_stocks.robinhood import options
 import pandas as pd
-import datetime
+import time
 import os
 import streamlit as st
 
+
+
 def robinhoodLogin():
+    
     if 'rh_logged_in' not in st.session_state:
-        try:
+        try: 
             r.login(os.getenv("ROBINHOOD_USERNAME"), os.getenv("ROBINHOOD_PASSWORD"))
             st.session_state['rh_logged_in'] = True
             st.success("Robinhood Login Success")
+            
         except Exception as e:
             st.session_state['rh_logged_in'] = False
             st.error(f"Robinhood Login Failed: {e}")
+    
             
     
 def fetchOptionsData(ticker, expireDate, csv = "options_data.csv"):
@@ -21,13 +26,17 @@ def fetchOptionsData(ticker, expireDate, csv = "options_data.csv"):
     optionsChain = r.options.find_options_by_expiration(ticker, expireDate, optionType=None, info=None)
     allOptions = []
     
-    
     for opt in optionsChain:
         try:
+            option_type = opt.get("option_type", None)
+            if option_type not in ["call", "put"]:
+                print("Skipping option with unknown type:", opt)
+                continue
+            
             allOptions.append({
                 "strike": float(opt["strike_price"]),
                 "expiration": opt["expiration_date"],
-                "type": opt["type"],
+                "type": option_type,
                 "implied_volatility": float(opt["implied_volatility"]),
                 "ask_price": float(opt["ask_price"]),
                 "bid_price": float(opt["bid_price"]),
@@ -38,6 +47,10 @@ def fetchOptionsData(ticker, expireDate, csv = "options_data.csv"):
             
         except:
             continue
+    
+    if not allOptions:
+        print("No valid options data fetched.")
+        return
     
     df = pd.DataFrame(allOptions)
     
