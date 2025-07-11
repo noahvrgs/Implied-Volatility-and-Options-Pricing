@@ -28,7 +28,7 @@ def fetchOptionsData(ticker, expireDate, csv = "options_data.csv"):
     
     for opt in optionsChain:
         try:
-            option_type = opt.get("option_type", None)
+            option_type = opt["type"]
             if option_type not in ["call", "put"]:
                 print("Skipping option with unknown type:", opt)
                 continue

@@ -3,10 +3,16 @@ import matplotlib as mpl
 from scipy.stats import norm
 from jax import grad
 
-'''
-    - Black Scholes Formula to return either call or put prices for an option
-'''
+
 def blackScholesCalculation(S, K, T, r, sigma, optionType): 
+    '''
+        - S: Current stock price
+        - K: Strike price
+        - T: Time to expiration (in years)
+        - r: Risk-free interest rate (typically 5%)
+        - sigma: Volatility (not given)
+        - optionType: either call or put
+    '''
     d1 = (np.log(S/K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
     d2 = d1 - sigma * np.sqrt(T)
     if optionType == 'call':
@@ -20,22 +26,25 @@ def blackScholesCalculation(S, K, T, r, sigma, optionType):
 
 
 
-'''
+
+def loss(S, K, T, r, sigmaGuess, price, optionType):
+    '''
     - Loss is the difference between the theoretical price and the market price
     - We want to minimize the amount of loss (close to 0)
-'''
-def loss(S, K, T, r, sigmaGuess, price, optionType):
+    '''
     theoreticalPrice = blackScholesCalculation(S, K, T, r, sigmaGuess, optionType)
     marketPrice = price
     return theoreticalPrice - marketPrice
 
 
 
-'''
-    - We will calculate an options implied volatility by using the Newton-Raphson method
-'''
+
 def impliedVolatilityCalculation(S, K, T, r, sigmaGuess, price, optionType, maxIterations = 20, epsilon = 0.001, verbose = True):
+    '''
+    - We will calculate an options implied volatility by using the Newton-Raphson method
+    '''
     converged = False
+    lossGradient = grad(loss, argnums = 4)
     
     # Step 1: Make a guess for the volatility
     sigma = sigmaGuess
@@ -71,5 +80,5 @@ def impliedVolatilityCalculation(S, K, T, r, sigmaGuess, price, optionType, maxI
         print("Did not converge")
     return sigma
 
-lossGradient = grad(loss, argnums = 4)
+
         
