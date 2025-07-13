@@ -5,9 +5,14 @@ import time
 import os
 import streamlit as st
 
-
-
+#-------------------------------------------------------------------------------------------------------------
 def robinhoodLogin():
+    
+    '''
+    - Robinhood login using .env credentials
+    - Checks if recently logged in to avoid verfication again
+    - Return Type: void
+    '''
     
     if 'rh_logged_in' not in st.session_state:
         try: 
@@ -19,9 +24,15 @@ def robinhoodLogin():
             st.session_state['rh_logged_in'] = False
             st.error(f"Robinhood Login Failed: {e}")
     
-            
-    
+#-------------------------------------------------------------------------------------------------------------
+
 def fetchOptionsData(ticker, expireDate, csv = "options_data.csv"):
+    
+    '''
+        - Uses the robin_stocks API to fetch a certain stock's option contracts
+        - Gets data and writes to a CSV file
+        - Return type: void
+    '''
     
     optionsChain = r.options.find_options_by_expiration(ticker, expireDate, optionType=None, info=None)
     allOptions = []
