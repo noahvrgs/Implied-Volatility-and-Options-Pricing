@@ -219,7 +219,7 @@ st.set_page_config(
 cssInjection()
 
 st.header("Implied Volatility & Black-Scholes Option Pricing")
-st.info("ℹ️ Below is a video on how we use the Black-Scholes model to take advantage of option contract mispricings.")
+st.info("ℹ️ Below is a video on how we use the Black-Scholes model to take advantage of a European-Style option contract mispricing.")
 
 col1, col2 = st.columns([1,1], gap="small")
         
