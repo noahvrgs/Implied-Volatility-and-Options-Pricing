@@ -93,7 +93,7 @@ def optionsTable(optionsContracts):
         ]
         
     df = pd.DataFrame(inputData, columns=columns)
-    st.dataframe(df, use_container_width=True, height=140)
+    st.dataframe(df, use_container_width=True, height=200)
 
 def selectedOption(contract: object, sigmaGuess: float):
     
